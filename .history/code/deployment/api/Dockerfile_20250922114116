@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+# Устанавливаем переменные окружения для OpenMP (libomp)
+ENV CC=/usr/bin/clang
+ENV CXX=/usr/bin/clang++
+ENV CPPFLAGS="-Xpreprocessor -fopenmp"
+ENV CFLAGS="-I/usr/local/opt/libomp/include"
+ENV CXXFLAGS="-I/usr/local/opt/libomp/include"
+ENV LDFLAGS="-Wl,-rpath,/usr/local/opt/libomp/lib -L/usr/local/opt/libomp/lib -lomp"
+ENV DYLD_LIBRARY_PATH=/usr/local/opt/libomp/lib
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
