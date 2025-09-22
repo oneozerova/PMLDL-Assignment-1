@@ -1,12 +1,11 @@
 version: '3.8'
 services:
   api:
-    build:
-      context: ../..                  
-      dockerfile: code/deployment/api/Dockerfile
+    build: ./api
     ports:
       - "8000:8000"
-
+    volumes:
+      - ../../models:/app/models  # Монтируем модель
   app:
     build: ./app
     ports:

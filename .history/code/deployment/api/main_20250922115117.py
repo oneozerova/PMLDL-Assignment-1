@@ -4,7 +4,7 @@ import joblib
 import numpy as np
 import os
 
-# Define Model
+# Определяем модель входных данных с 11 характеристиками винного датасета
 class WineInput(BaseModel):
     fixed_acidity: float
     volatile_acidity: float
@@ -18,7 +18,7 @@ class WineInput(BaseModel):
     sulphates: float
     alcohol: float
 
-# Load Model
+# Загружаем модель, путь относительно файла main.py
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 model_path = os.path.join(BASE_DIR, "models", "wine_model.pkl")
 
@@ -27,10 +27,10 @@ model = joblib.load(model_path)
 
 app = FastAPI()
 
-# Endpoint for the prediction
+# Эндпоинт для предсказания
 @app.post("/predict")
 def predict(input: WineInput):
-    # creatw np.array out of all features
+    # Создаем np.array из всех входных признаков в правильном порядке
     features = np.array([
         input.fixed_acidity,
         input.volatile_acidity,
@@ -44,7 +44,7 @@ def predict(input: WineInput):
         input.sulphates,
         input.alcohol
     ])
-    # make prediction
+    # Делаем предсказание модели
     pred = model.predict([features])[0]
-    # returen the result
+    # Возвращаем результат в читаемом виде
     return {"prediction": "Good wine" if pred == 1 else "Bad wine"}

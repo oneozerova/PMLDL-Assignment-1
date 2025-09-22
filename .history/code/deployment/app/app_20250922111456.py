@@ -1,8 +1,9 @@
-import streamlit as st  # UI library
-import requests          # for HTTP-requests к API
-import pandas as pd     
+import streamlit as st  # UI библиотека, очень простая для построения интерактивных приложений
+import requests          # Для отправки HTTP-запросов к API
+import pandas as pd      # Для возможной работы с таблицами (необязательно, но удобно)
 
 
+st.title('Hello Streamlit!')
 fixed_acidity = st.number_input("Fixed Acidity", min_value=0.0)
 volatile_acidity = st.number_input("Volatile Acidity", min_value=0.0)
 citric_acid = st.number_input("Citric Acid", min_value=0.0)
@@ -29,7 +30,7 @@ if st.button("Predict"):
         "sulphates": sulphates,
         "alcohol": alcohol
     }
-    # send POST on FastAPI
+    # Отправляем POST-запрос на FastAPI сервис с моделью (адрес из docker-compose)
     response = requests.post("http://api:8000/predict", json=data)
-    # show res in UI
+    # Показываем результат в UI
     st.write("Prediction:", response.json()["prediction"])

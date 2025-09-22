@@ -1,0 +1,11 @@
+# code/deployment/app/Dockerfile
+FROM python:3.11-slim
+WORKDIR /app               # Рабочая директория внутри контейнера
+
+COPY requirements.txt .    # Копируем файл зависимостей
+RUN pip install -r requirements.txt  # Устанавливаем зависимости
+
+COPY . .                  # Копируем весь исходный код в контейнер
+
+EXPOSE 8501               # Открываем порт Streamlit по умолчанию
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]  # Запуск Streamlit

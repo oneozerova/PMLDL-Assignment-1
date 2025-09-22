@@ -1,7 +1,6 @@
-# code/deployment/api/Dockerfile
 FROM python:3.11-slim
 
-# Create envirment variables for OpenMP (libomp)
+# Устанавливаем переменные окружения для OpenMP (libomp)
 ENV CC=/usr/bin/clang
 ENV CXX=/usr/bin/clang++
 ENV CPPFLAGS="-Xpreprocessor -fopenmp"
@@ -10,16 +9,17 @@ ENV CXXFLAGS="-I/usr/local/opt/libomp/include"
 ENV LDFLAGS="-Wl,-rpath,/usr/local/opt/libomp/lib -L/usr/local/opt/libomp/lib -lomp"
 ENV DYLD_LIBRARY_PATH=/usr/local/opt/libomp/lib
 
-#  main.py 
-WORKDIR /app/code/deployment/api
-
-#  requirements 
-COPY code/deployment/api/requirements.txt /app/code/deployment/api/requirements.txt
-RUN pip install -r /app/code/deployment/api/requirements.txt
-
-# put repo to /app 
-COPY . /app
 
 
-#  uvicorn 
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY . .
+
+# Копируем модель из корня проекта, учитывая, что контекст сборки — code/deployment/api/
+COPY ../../../models/wine_model.pkl /models/wine_model.pkl
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
